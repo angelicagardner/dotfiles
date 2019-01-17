@@ -1,5 +1,17 @@
 # COMMON .GITIGNORE CONFIGURATIONS
 
+#### OS generated files ####
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+#### VSCODE ####
+.vscode
+
 #### NODE.JS ####
 # Logs
 logs
@@ -81,9 +93,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
-
-#### VSCODE ####
-.vscode
 
 #### PYTHON ####
 
