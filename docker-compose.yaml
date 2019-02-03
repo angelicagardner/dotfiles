@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  wordpress:
+    image: wordpress:latest
+    depends_on: 
+      - db
+    volumes:
+      - wp_data:/var/www/html
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: exampledb
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: qwerty
+volumes:
+  wp_data:
+  db_data:
+  
