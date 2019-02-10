@@ -1,4 +1,4 @@
-# SERVER PUSH IMPORTANT FILES
+### SERVER PUSH IMPORTANT FILES
 Header set Link "<//fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i,900,900i>; rel=preload; as=style,
                  </style-main.css>; rel=preload; as=style,
                  </CSS/header.css>; rel=preload; as=style,
@@ -6,7 +6,7 @@ Header set Link "<//fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700
                  </JS/libs/jquery.flexslider-min.js>; rel=preload; as=script,
                  </images/mainpromo/welcome01-1600.jpg>; rel=preload; as=image"
 
-# ENABLING GZIP COMPRESSION FOR APACHE
+### ENABLING GZIP COMPRESSION FOR APACHE
 <IfModule mod_deflate.c>
     SetOutputFilter DEFLATE
     	<IfModule mod_setenvif.c>
@@ -34,20 +34,20 @@ Header set Link "<//fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700
     </IfModule>
 </IfModule>
 
-# TEMP MAINTENANCE PAGE (replace the IP Address!!)
+### TEMP MAINTENANCE PAGE (replace the IP Address!!)
 <IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REMOTE_ADDR} !^000.000.000.0005
-    RewriteRule .* - [R-503,L]
+    	RewriteEngine On
+    	RewriteCond %{REMOTE_ADDR} !^000.000.000.0005
+    	RewriteRule .* - [R-503,L]
 </IfModule>
-ErrorDocument 503 "<h1>Our site is getting an update</h1><p>Back in 30 minutes!</p>
+	ErrorDocument 503 "<h1>Our site is getting an update</h1><p>Back in 30 minutes!</p>
 <IfModule mod_headers.c>
-    # 3600 - 60 minutes
-    # 86400 - 1 day
-    Header always set Retry-After "86400"
+    	# 3600 - 60 minutes
+    	# 86400 - 1 day
+    	Header always set Retry-After "86400"
 </IfModule>
 
-# TEST ENVIRONMENT
+### TEST ENVIRONMENT
 	# Apache < 2.4
 	Order Allow,Deny
 	Deny from all
@@ -56,21 +56,21 @@ ErrorDocument 503 "<h1>Our site is getting an update</h1><p>Back in 30 minutes!<
 	Require all denied
 	Require ip 127.0.0.1
 	
-# REDIRECT WHEN USING SSL
+### REDIRECT WHEN USING SSL
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	RewriteCond %{SERVER_PORT} !^443$
 	RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </IfModule>
 
-# STOP HOTLINKING
+### STOP HOTLINKING
 <IfModule mod.rewrite.c>
 	RewriteCond %{HTTP_REFERER} !^$
 	RewriteCond %{HTTP_REFERER} !^http(s)?://([^.]+\.)?example\.com [NC]
 	RewriteRule \.(gif|jpe?g?|png)$ - [NC,F,L]
 </IfModule>
 
-# BLOCK IP
+### BLOCK IP
 	# Apache < 2.4
 	Order deny,allow
 	Allow from all
@@ -79,30 +79,69 @@ ErrorDocument 503 "<h1>Our site is getting an update</h1><p>Back in 30 minutes!<
 	Require all granted
 	Require not ip 172.28.255.2
 
-# PREVENT DIRECTORY LISTING
-Options -Indexes
+### PREVENT DIRECTORY LISTING
+	Options -Indexes
 
-# CACHE ALL THINGS:
+### CACHE ALL THINGS:
 # One year for most static assets
 <filesMatch ".(css|js|ico)$">
-    Header set Cache-Control "max-age=31536000, public"
+    	Header set Cache-Control "max-age=31536000, public"
 </filesMatch>
 #One month for images
 <filesMatch ".(jpg|jpeg|png|gif|svg)$">
-    Header set Cache-Control "max-age=2628000, public"
+    	Header set Cache-Control "max-age=2628000, public"
 </filesMatch>
 
-# BEGIN WordPress
+### BEGIN WordPress
+
+# SECURE LOGIN PAGE
+<Files wp-login.php>
+  # Apache < 2.3
+ 	<IfModule !mod_authz_core.c>
+    		Order Deny,Allow
+    		Deny from all
+    		Allow from 123.123.123.000
+  	</IfModule>
+  # Apache >= 2.3
+  	<IfModule mod_authz_core.c>
+   	Require ip 123.123.123.000
+  	</IfModule>
+</Files>
+
+# BLOCK REQUESTS FOR INSTALL.PHP
+	RedirectMatch Permanent wp-admin/install(-helper)?\.php /
+
+# PROTECT WP-CONFIG
+	<files wp-config.php>
+	order allow,deny
+	deny from all
+</files>
+
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase / 
-# JSON Web Token settings:
-ReqriteCnd %{HTTP:Authorization} ^(.*)
-RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-RewriteRule ^index\.php$ - [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
-# END JWT settings
+	RewriteEngine On
+	RewriteBase /
+	# JSON Web Token settings:
+	RewriteCond %{HTTP:Authorization} ^(.*)
+	RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+	RewriteRule ^index\.php$ - [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . /index.php [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
+	# END JWT settings
+	RewriteRule ^index\.php$ - [L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . /index.php [L]
 </IfModule>
-# END WordPress
+
+# SECURE LOOSE FILES
+<IfModule mod_alias.c>
+	RedirectMatch 403 (?i)(^#.*#|~)$
+	RedirectMatch 403 (?i)/readme\.(html|txt)
+	RedirectMatch 403 (?i)\.(ds_store|well-known)
+	RedirectMatch 403 (?i)/wp-config-sample\.php
+	RedirectMatch 403
+	(?i)\.(7z|bak|bz2|com|conf|dist|fla|git|inc|ini|log|old|psd|rar|tar|tgz|save|sh|sql|svn|swo|swp)$
+</IfModule>
+
+### END WordPress
