@@ -5,6 +5,7 @@ This is a repo to hold various template files for my development environement se
 ## README.md
 
 *Awesome Markdown editor used to create README.md files and other documents.*
+
 Visit **[Dillinger.io]**(https://dillinger.io) for a great, visual HTML5 Markdown editor.
 
 ## .gitignore
