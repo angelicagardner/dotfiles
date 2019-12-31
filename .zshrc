@@ -1,24 +1,10 @@
-source ~/.nvm/nvm.sh
-nvm use stable
-shopt -s autocd
-shopt -s histappend
+export PATH=/usr/local/bin:$PATH
 
-export PATH=$PATH:$HOME/bin
-
-export HISTSIZE=5000
-export HISTFILESIZE=10000
+export HISTSIZE=1000
+export HISTFILESIZE=5000
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
-
-export CLICOLOR=1
-export LSCOLORS=GxFxCxDxBxegedabagaced
-
-txtred='\e[0;31m' # Red
-txtgrn='\e[0;32m' # Green
-bldgrn='\e[1;32m' # Bold Green
-bldpur='\e[1;35m' # Bold Purple
-txtrst='\e[0m'    # Text Reset
 
 emojis=("👾" "🌐" "🎲" "🌍" "🐉" "🌵")
 
