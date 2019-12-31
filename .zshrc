@@ -1,5 +1,3 @@
-HOST_NAME=minima
-
 source ~/.nvm/nvm.sh
 nvm use stable
 shopt -s autocd
@@ -36,29 +34,6 @@ print_before_the_prompt () {
 PROMPT_COMMAND=print_before_the_prompt
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 PS1="$EMOJI >"
-
-fortune | cowsay -f tux
-
-function mkcd()
-{
-	mkdir $1 && cd $1
-}
-
-# -------
-# Aliases
-# -------
-alias 🍺="git checkout -b drunk"
-alias a='code .'
-alias c='code .'
-alias reveal-md="reveal-md --theme night --highlight-theme hybrid --port 1337"
-alias ns='npm start'
-alias start='npm start'
-alias nr='npm run'
-alias run='npm run'
-alias nis='npm i -S'
-alias l="ls" # List files in current directory
-alias ll="ls -al" # List all files in current directory in long list format
-alias o="open ." # Open the current directory in Finder
 
 # ----------------------
 # Git Aliases
